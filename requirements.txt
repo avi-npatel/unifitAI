@@ -1,0 +1,7 @@
+flask>=3.0
+pandas>=2.2
+scikit-learn>=1.5
+joblib>=1.4
+numpy>=1.26
+firebase-admin>=6.5
+tzdata>=2024.1
