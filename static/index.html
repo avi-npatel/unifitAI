@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UniFit: workout plans with starting weights</title>
+  <meta name="description" content="Enter your height, weight, age and experience. UniFit builds your training week and picks a starting weight for every lift.">
+  <meta name="theme-color" content="#252b30">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23252b30'/%3E%3Crect x='6' y='7' width='5' height='18' fill='%230a4bcb'/%3E%3Crect x='13' y='11' width='4' height='10' fill='%23e9ecee'/%3E%3Crect x='17' y='15' width='9' height='2' fill='%23a9b2b9'/%3E%3C/svg%3E">
+  <link rel="preload" href="/static/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#plan">Skip to your plan</a>
+
+  <header class="stage">
+    <div class="stage__inner">
+      <div class="stage__copy">
+        <p class="brand">UniFit</p>
+        <h1>Know what goes on the bar.</h1>
+        <p class="lede">Enter your height, weight, age and experience. UniFit builds your training week and picks a starting weight for every lift.</p>
+      </div>
+
+      <figure class="bar">
+        <svg id="bar" viewBox="190 0 440 220" role="img" aria-label="An empty barbell" preserveAspectRatio="xMinYMid meet"></svg>
+        <figcaption>
+          <p class="bar__load"><span id="bar-num">45</span> <span id="bar-unit">lb, empty bar</span></p>
+          <p class="bar__lift" id="bar-lift">Build a plan to load it.</p>
+        </figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="profile" aria-labelledby="profile-title">
+      <h2 id="profile-title">About you</h2>
+
+      <form id="profile-form" novalidate>
+        <div class="field">
+          <label for="age">Age</label>
+          <div class="input-unit"><input id="age" name="age" type="number" inputmode="numeric" min="14" max="90" autocomplete="off" aria-describedby="err-age"><span>years</span></div>
+          <p class="error" id="err-age" hidden></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Height</legend>
+          <div class="pair">
+            <div class="input-unit"><input id="height-ft" type="number" inputmode="numeric" min="4" max="7" aria-label="Height, feet" aria-describedby="err-height_in"><span>ft</span></div>
+            <div class="input-unit"><input id="height-in" type="number" inputmode="decimal" min="0" max="11.5" step="0.5" aria-label="Height, extra inches" aria-describedby="err-height_in"><span>in</span></div>
+          </div>
+          <p class="error" id="err-height_in" hidden></p>
+        </fieldset>
+
+        <div class="field">
+          <label for="weight">Weight</label>
+          <div class="input-unit"><input id="weight" name="weight_lb" type="number" inputmode="decimal" min="70" max="500" autocomplete="off" aria-describedby="err-weight_lb"><span>lb</span></div>
+          <p class="error" id="err-weight_lb" hidden></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Sex</legend>
+          <div class="segmented">
+            <label><input type="radio" name="sex" value="male"><span>Male</span></label>
+            <label><input type="radio" name="sex" value="female"><span>Female</span></label>
+            <label><input type="radio" name="sex" value="other"><span>Other</span></label>
+          </div>
+          <p class="hint">Average strength differs by sex, so the model uses it. Other averages the two.</p>
+          <p class="error" id="err-sex" hidden></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Experience</legend>
+          <div class="segmented">
+            <label><input type="radio" name="experience" value="beginner"><span>Beginner</span></label>
+            <label><input type="radio" name="experience" value="intermediate"><span>Intermediate</span></label>
+            <label><input type="radio" name="experience" value="advanced"><span>Advanced</span></label>
+          </div>
+          <p class="hint">Beginner is under 6 months of regular lifting. Advanced is more than 2 years.</p>
+          <p class="error" id="err-experience" hidden></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Goal</legend>
+          <div class="segmented">
+            <label><input type="radio" name="goal" value="hypertrophy" checked><span>Build muscle</span></label>
+            <label><input type="radio" name="goal" value="strength"><span>Get stronger</span></label>
+            <label><input type="radio" name="goal" value="fat_loss"><span>Lose fat</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Training days per week</legend>
+          <div class="segmented segmented--tight">
+            <label><input type="radio" name="days_per_week" value="2"><span>2</span></label>
+            <label><input type="radio" name="days_per_week" value="3" checked><span>3</span></label>
+            <label><input type="radio" name="days_per_week" value="4"><span>4</span></label>
+            <label><input type="radio" name="days_per_week" value="5"><span>5</span></label>
+            <label><input type="radio" name="days_per_week" value="6"><span>6</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="session">Time per session</label>
+          <div class="range">
+            <input id="session" name="session_minutes" type="range" min="20" max="90" step="5" value="45">
+            <output id="session-out" for="session">45 min</output>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Equipment</legend>
+          <div class="segmented">
+            <label><input type="radio" name="equipment" value="gym" checked><span>Full gym</span></label>
+            <label><input type="radio" name="equipment" value="dumbbell"><span>Dumbbells</span></label>
+            <label><input type="radio" name="equipment" value="bodyweight"><span>No equipment</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Focus areas <span class="optional">(optional, up to two)</span></legend>
+          <div class="chips" id="focus">
+            <label><input type="checkbox" name="focus" value="chest"><span>Chest</span></label>
+            <label><input type="checkbox" name="focus" value="back"><span>Back</span></label>
+            <label><input type="checkbox" name="focus" value="shoulders"><span>Shoulders</span></label>
+            <label><input type="checkbox" name="focus" value="arms"><span>Arms</span></label>
+            <label><input type="checkbox" name="focus" value="legs"><span>Legs</span></label>
+            <label><input type="checkbox" name="focus" value="core"><span>Core</span></label>
+          </div>
+          <p class="error" id="err-focus" hidden></p>
+        </fieldset>
+
+        <div class="actions">
+          <button class="button" type="submit" id="build">Build my plan</button>
+          <button class="link" type="button" id="example">Fill in an example</button>
+        </div>
+        <p class="status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="plan" id="plan" aria-labelledby="plan-title" tabindex="-1">
+      <h2 id="plan-title">Your plan</h2>
+
+      <div id="plan-empty" class="empty">
+        <p>Fill in the form and your training week appears here, with a starting weight for every lift.</p>
+        <ol class="week week--ghost" aria-hidden="true">
+          <li>Mon</li><li>Tue</li><li>Wed</li><li>Thu</li><li>Fri</li><li>Sat</li><li>Sun</li>
+        </ol>
+      </div>
+
+      <div id="plan-result" hidden>
+        <p class="summary" id="summary"></p>
+        <div class="week" id="week" role="tablist" aria-label="Training week"></div>
+        <div id="day-panel" role="tabpanel" tabindex="0"></div>
+        <div class="notes" id="notes"></div>
+
+        <section class="reminders" id="reminders" aria-labelledby="reminders-title">
+          <h3 id="reminders-title">Reminders</h3>
+          <p class="reminders__lead">Get a notification on training days at the time you choose, plus a short note on rest days.</p>
+          <p class="notice" id="push-notice" hidden></p>
+
+          <div class="reminders__form" id="push-form">
+            <div class="field field--inline">
+              <label for="reminder-time">Remind me at</label>
+              <input id="reminder-time" type="time" value="07:30">
+            </div>
+            <label class="check"><input type="checkbox" id="rest-notes" checked><span>Also send a note on rest days</span></label>
+            <button class="button" type="button" id="push-on">Turn on reminders</button>
+          </div>
+
+          <div class="reminders__on" id="push-active" hidden>
+            <p id="push-summary"></p>
+            <div class="actions">
+              <button class="button button--quiet" type="button" id="push-test">Send a test</button>
+              <button class="link" type="button" id="push-off">Turn off</button>
+            </div>
+            <div class="preview" id="push-preview" hidden>
+              <p class="preview__label" id="push-preview-label"></p>
+              <p class="preview__title" id="push-preview-title"></p>
+              <p id="push-preview-body"></p>
+            </div>
+          </div>
+          <p class="status" id="push-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="how">
+    <div class="how__inner">
+      <h2>How the weights are chosen</h2>
+      <p id="model-line">Loading model details.</p>
+      <p>The training rows are generated from a strength formula that accounts for body size, sex, age and experience, then blurred with noise. A model trained on them learns that formula, so treat the weights as a place to start, not as coaching or medical advice.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
